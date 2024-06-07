@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
-import { Prisma } from '@prisma/client';
+import { User, Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -11,23 +11,52 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(
+    email: string,
+    pass: string
+  ): Promise<Omit<User, 'password'> | null> {
     const user = await this.userService.findUserByEmail(email);
-    if (user && (await bcrypt.compare(pass, user.password))) {
-      const { password, ...result } = user;
-      return result;
+    if (!user) {
+      return null;
     }
-    return null;
+
+    const isPasswordValid = await bcrypt.compare(pass, user.password);
+
+    if (!isPasswordValid) {
+      return null;
+    }
+
+    const userWithoutPassword = user;
+    delete userWithoutPassword.password;
+
+    return userWithoutPassword;
   }
 
-  async login(user: any) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async login(user: Omit<User, 'password'>): Promise<{ access_token: string }> {
+    try {
+      const payload = { email: user.email, sub: user.id, role: user.role };
+
+      return {
+        access_token: this.jwtService.sign(payload, { expiresIn: '30d' }),
+      };
+    } catch (error) {
+      throw new Error('Error generating token');
+    }
   }
 
-  async register(data: Prisma.UserCreateInput) {
-    return this.userService.createUser(data);
+  async register(
+    data: Prisma.UserCreateInput
+  ): Promise<{ access_token: string }> {
+    try {
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+      const userData: Prisma.UserCreateInput = {
+        ...data,
+        password: hashedPassword,
+      };
+      const user = await this.userService.createUser(userData);
+      return this.login(user);
+    } catch (error) {
+      throw new Error('Error during registration');
+    }
   }
 }

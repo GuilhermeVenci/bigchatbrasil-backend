@@ -7,14 +7,26 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Provider {
+  EMAIL
+  PHONE
+  GOOGLE
+  FACEBOOK
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
 model User {
   id        String    @id @default(uuid())
   email     String?   @unique
   phone     String?   @unique
-  provider  String?
+  provider  Provider  @default(EMAIL)
   password  String?
   name      String?
-  role      Role
+  role      Role      @default(CLIENT)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
   client    Client?
@@ -64,9 +76,4 @@ model Message {
   sentAt      DateTime @default(now()) @map("send_at")
 
   @@map("messages")
-}
-
-enum Role {
-  ADMIN
-  CLIENT
 }

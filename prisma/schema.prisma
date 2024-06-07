@@ -1,0 +1,72 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String?   @unique
+  phone     String?   @unique
+  provider  String?
+  password  String?
+  name      String?
+  role      Role
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  client    Client?
+
+  @@map("users")
+}
+
+model Client {
+  id          Int       @id @default(autoincrement())
+  userId      String    @unique @map("user_id")
+  user        User      @relation(fields: [userId], references: [id])
+  phone       String
+  cpf         String    @unique
+  cnpj        String    @unique
+  companyName String    @map("company_name")
+  planId      Int
+  plan        Plan      @relation(fields: [planId], references: [id])
+  credits     Float     @default(0.0)
+  limit       Float     @default(0.0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+  messages    Message[]
+
+  @@map("clients")
+}
+
+model Plan {
+  id          Int       @id @default(autoincrement())
+  name        String
+  isPrepaid   Boolean   @map("is_prepaid")
+  pricePerSMS Float     @map("price_per_sms")
+  maxLimit    Float     @map("max_limit")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+  clients     Client[]
+
+  @@map("plans")
+}
+
+model Message {
+  id          Int      @id @default(autoincrement())
+  phoneNumber String   @map("phone_number")
+  isWhatsApp  Boolean  @map("is_whatsapp")
+  text        String
+  clientId    Int      @map("client_id")
+  client      Client   @relation(fields: [clientId], references: [id])
+  sentAt      DateTime @default(now()) @map("send_at")
+
+  @@map("messages")
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}

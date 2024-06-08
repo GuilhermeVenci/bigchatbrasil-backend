@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, Prisma } from '@prisma/client';
+import { UserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -13,11 +14,26 @@ export class UserService {
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
   }
 
-  async getUserById(id: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { id } });
+  async getUserById(id: string): Promise<UserDto | null> {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        phone: true,
+        provider: true,
+        name: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+        password: false,
+      },
+    });
   }
 
   async updateUser(id: string, data: Prisma.UserUpdateInput): Promise<User> {

@@ -32,12 +32,15 @@ export class AuthService {
     return userWithoutPassword;
   }
 
-  async login(user: Omit<User, 'password'>): Promise<{ access_token: string }> {
+  async login(
+    user: Omit<User, 'password'>
+  ): Promise<{ access_token: string; role: string }> {
     try {
-      const payload = { email: user.email, sub: user.id, role: user.role };
+      const payload = { email: user.email, sub: user.id };
 
       return {
         access_token: this.jwtService.sign(payload, { expiresIn: '30d' }),
+        role: user.role,
       };
     } catch (error) {
       throw new Error('Error generating token');

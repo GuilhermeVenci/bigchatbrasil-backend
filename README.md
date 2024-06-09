@@ -108,6 +108,7 @@ bcb-backend/
 
 ### Mensagens
 
+- GET /messages: Consultar as mensagens enviadas por um cliente
 - POST /messages: Enviar uma nova mensagem
 
 ### Operações de Backoffice

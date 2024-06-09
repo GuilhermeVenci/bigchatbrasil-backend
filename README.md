@@ -1,73 +1,128 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Backend do Projeto BCB – Big Chat Brasil
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Descrição
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este projeto é o backend do sistema BCB – Big Chat Brasil, um enviador de SMS e outras mensagens para clientes brasileiros. Ele foi desenvolvido utilizando Node.js com NestJS e PostgreSQL. O sistema permite que os clientes enviem mensagens para seus usuários finais.
 
-## Description
+## Funcionalidades
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Cadastro de clientes
+- Envio de SMS e mensagens via WhatsApp
 
-## Installation
+## Tecnologias Utilizadas
 
-```bash
-$ npm install
+- **Backend**: Node.js com NestJS
+- **Banco de Dados**: PostgreSQL
+- **Outras Tecnologias**: Docker, Docker Compose
+
+## Pré-requisitos
+
+- Node.js (v14 ou superior)
+- Docker e Docker Compose
+- PostgreSQL
+
+## Instalação e Execução
+
+Siga os passos abaixo para configurar e executar o projeto.
+
+### 1. Clonar o repositório
+
+```
+git clone https://github.com/guilhermevenci/bigchatbrasil-backend.git
+cd bigchatbrasil-backend
 ```
 
-## Running the app
+### 2. Clonar o repositório
 
-```bash
-# development
-$ npm run start
+Crie um arquivo .env na raiz do projeto com as seguintes variáveis:
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+DATABASE_URL=postgresql://user:password@localhost:5432/bcb
+JWT_SECRET=sua_chave_secreta
 ```
 
-## Test
+### 3. Instalar dependências
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```
+npm install
 ```
 
-## Support
+### 4. Executar as migrações do banco de dados
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+npx prisma migrate dev
+```
 
-## Stay in touch
+### 5. Iniciar o servidor
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+Copiar código
+npm run start:dev
+```
 
-## License
+### 6. Executar o projeto com Docker
 
-Nest is [MIT licensed](LICENSE).
+Alternativamente, você pode executar o projeto utilizando Docker:
+
+```
+docker-compose up
+```
+
+## Estrutura do Projeto
+
+```
+bcb-backend/
+├── src/
+│   ├── auth/
+│   ├── client/
+│   ├── message/
+│   ├── user/
+│   ├── app.module.ts
+│   ├── main.ts
+├── prisma/
+│   ├── schema.prisma
+├── .env
+├── docker-compose.yml
+├── package.json
+├── README.md
+```
+
+## Rotas da API
+
+### Autenticação
+
+- POST /auth/signup: Cadastro de novo usuário
+- POST /auth/login: Login do usuário
+
+### Clientes
+
+- GET /clients: Listar todos os clientes
+- POST /clients: Criar um novo cliente
+- GET /clients/
+  : Obter detalhes de um cliente específico
+- PATCH /clients/
+  : Atualizar informações de um cliente
+- DELETE /clients/
+  : Deletar um cliente
+
+### Mensagens
+
+- POST /messages: Enviar uma nova mensagem
+
+### Operações de Backoffice
+
+- POST /backoffice/credits: Incluir créditos para um cliente
+- GET /backoffice/balance/
+  : Consultar saldo de um cliente
+- PATCH /backoffice/limit/
+  : Alterar limite de um cliente
+- PATCH /backoffice/plan/
+  : Alterar plano de um cliente
+- GET /backoffice/clients/
+  : Ver dados de um cliente
+
+## Boas Práticas
+
+- Documentação e comentários apenas quando necessário para entendimento do negócio
+- Utilização de DTOs para transferência de dados entre camadas
+- Manutenção da organização e legibilidade do código

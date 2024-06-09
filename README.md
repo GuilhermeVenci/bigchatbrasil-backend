@@ -78,6 +78,7 @@ bcb-backend/
 │   ├── message/
 │   ├── user/
 │   ├── app.module.ts
+│   ├── app.service.ts
 │   ├── main.ts
 ├── prisma/
 │   ├── schema.prisma

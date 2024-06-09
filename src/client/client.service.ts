@@ -1,17 +1,41 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Client, Prisma } from '@prisma/client';
+import { Client, Plan, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ClientService {
   constructor(private prisma: PrismaService) {}
 
   async createClient(data: Prisma.ClientCreateInput): Promise<Client> {
-    return this.prisma.client.create({ data });
+    if (!data.user || !data.user.connect || !data.user.connect.id) {
+      throw new Error('User information is missing or incorrect' + data.user);
+    }
+
+    return this.prisma.client.create({
+      data: {
+        user: {
+          connect: { id: data.user.connect.id },
+        },
+        phone: data.phone,
+        cpf: data.cpf,
+        cnpj: data.cnpj,
+        companyName: data.companyName,
+        name: data.name,
+        plan: data.plan,
+        credits: data.credits,
+        limit: data.limit,
+      },
+    });
   }
 
   async getClientById(id: number): Promise<Client | null> {
     return this.prisma.client.findUnique({ where: { id } });
+  }
+
+  async getClientByUserId(userId: string) {
+    return this.prisma.client.findUnique({
+      where: { userId },
+    });
   }
 
   async updateClient(
@@ -40,10 +64,10 @@ export class ClientService {
     });
   }
 
-  async setClientPlan(clientId: number, planId: number): Promise<Client> {
+  async setClientPlanByUserId(userId: string, plan: Plan): Promise<Client> {
     return this.prisma.client.update({
-      where: { id: clientId },
-      data: { planId },
+      where: { userId },
+      data: { plan },
     });
   }
 }

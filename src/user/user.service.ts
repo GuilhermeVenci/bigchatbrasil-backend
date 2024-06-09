@@ -19,21 +19,18 @@ export class UserService {
     });
   }
 
-  async getUserById(id: string): Promise<UserDto | null> {
-    return this.prisma.user.findUnique({
+  async getUserById(id: string): Promise<UserDto> {
+    const user = await this.prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        email: true,
-        phone: true,
-        provider: true,
-        name: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-        password: false,
-      },
     });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const userWithoutPassword = user;
+    delete userWithoutPassword.password;
+    return userWithoutPassword as UserDto;
   }
 
   async updateUser(id: string, data: Prisma.UserUpdateInput): Promise<User> {

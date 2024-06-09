@@ -13,15 +13,24 @@ export class MessageService {
         isWhatsApp: data.isWhatsApp,
         text: data.text,
         sentAt: data.sentAt,
-        client: {
-          connect: { id: data.client.connect.id },
-        },
+        client: data.client,
       },
     });
   }
 
-  async getMessages(): Promise<Message[]> {
-    return this.prisma.message.findMany();
+  async getMessages(userId: string): Promise<Message[]> {
+    const client = await this.prisma.client.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+
+    if (!client) {
+      throw new Error('Client not found');
+    }
+
+    return this.prisma.message.findMany({
+      where: { clientId: client.id },
+    });
   }
 
   async getMessageById(id: number): Promise<Message> {

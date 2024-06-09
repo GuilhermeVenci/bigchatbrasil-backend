@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Plan } from '@prisma/client';
 
 @Controller('clients')
 export class ClientController {
@@ -17,13 +18,26 @@ export class ClientController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async createClient(@Body() createClientDto) {
-    return this.clientService.createClient(createClientDto);
+    const clientData = {
+      ...createClientDto,
+      user: {
+        connect: { id: createClientDto.userId },
+      },
+    };
+
+    return this.clientService.createClient(clientData);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getClientById(@Param('id') id: number) {
-    return this.clientService.getClientById(id);
+  async getClientById(@Param('userId') id: string) {
+    return this.clientService.getClientByUserId(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('user/:userId')
+  async getClientByUserId(@Param('userId') userId: string) {
+    return this.clientService.getClientByUserId(userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -46,7 +60,7 @@ export class ClientController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/set-plan')
-  async setClientPlan(@Param('id') id: number, @Body() body) {
-    return this.clientService.setClientPlan(id, body.planId);
+  async setClientPlanByUserId(@Param('userId') userId: string, @Body() body) {
+    return this.clientService.setClientPlanByUserId(userId, body.plan as Plan);
   }
 }

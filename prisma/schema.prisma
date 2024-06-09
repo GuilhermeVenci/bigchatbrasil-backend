@@ -19,13 +19,17 @@ enum Role {
   CLIENT
 }
 
+enum Plan {
+  PREPAID
+  POSTPAID
+}
+
 model User {
   id        String    @id @default(uuid())
   email     String?   @unique
   phone     String?   @unique
   provider  Provider  @default(EMAIL)
   password  String?
-  name      String?
   role      Role      @default(CLIENT)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
@@ -39,31 +43,18 @@ model Client {
   userId      String    @unique @map("user_id")
   user        User      @relation(fields: [userId], references: [id])
   phone       String
+  name        String
   cpf         String    @unique
   cnpj        String    @unique
   companyName String    @map("company_name")
-  planId      Int
-  plan        Plan      @relation(fields: [planId], references: [id])
-  credits     Float     @default(0.0)
-  limit       Float     @default(0.0)
+  plan        Plan      @default(PREPAID)
+  credits     Float?    @default(10.0)
+  limit       Float?    @default(100.0)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime? @updatedAt @map("updated_at")
   messages    Message[]
 
   @@map("clients")
-}
-
-model Plan {
-  id          Int       @id @default(autoincrement())
-  name        String
-  isPrepaid   Boolean   @map("is_prepaid")
-  pricePerSMS Float     @map("price_per_sms")
-  maxLimit    Float     @map("max_limit")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime? @updatedAt @map("updated_at")
-  clients     Client[]
-
-  @@map("plans")
 }
 
 model Message {

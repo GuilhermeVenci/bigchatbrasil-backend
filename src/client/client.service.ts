@@ -64,9 +64,9 @@ export class ClientService {
     });
   }
 
-  async setClientPlanByUserId(userId: string, plan: Plan): Promise<Client> {
+  async setClientPlanByUserId(id: number, plan: Plan): Promise<Client> {
     return this.prisma.client.update({
-      where: { userId },
+      where: { id },
       data: { plan },
     });
   }

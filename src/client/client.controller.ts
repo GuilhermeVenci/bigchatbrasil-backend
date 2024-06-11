@@ -42,25 +42,32 @@ export class ClientController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async updateClient(@Param('id') id: number, @Body() updateClientDto) {
-    return this.clientService.updateClient(id, updateClientDto);
+  async updateClient(@Param('id') id: string, @Body() updateClientDto) {
+    const clientId = parseInt(id);
+    return this.clientService.updateClient(clientId, updateClientDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/add-credits')
-  async addCredits(@Param('id') id: number, @Body() body) {
-    return this.clientService.addCredits(id, body.credits);
+  async addCredits(@Param('id') id: string, @Body() body) {
+    const clientId = parseInt(id);
+    return this.clientService.addCredits(clientId, body.credits);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/set-limit')
-  async setClientLimit(@Param('id') id: number, @Body() body) {
-    return this.clientService.setClientLimit(id, body.limit);
+  async setClientLimit(@Param('id') id: string, @Body() body) {
+    const clientId = parseInt(id);
+    return this.clientService.setClientLimit(clientId, body.limit);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/set-plan')
-  async setClientPlanByUserId(@Param('userId') userId: string, @Body() body) {
-    return this.clientService.setClientPlanByUserId(userId, body.plan as Plan);
+  async setClientPlanByUserId(@Param('id') id: string, @Body() body) {
+    const clientId = parseInt(id);
+    return this.clientService.setClientPlanByUserId(
+      clientId,
+      body.plan as Plan
+    );
   }
 }

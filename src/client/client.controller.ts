@@ -6,9 +6,12 @@ import {
   Param,
   Body,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CreateClientDto } from './dto/create-client.dto';
+import { UpdateClientDto } from './dto/update-client.dto';
 import { Plan } from '@prisma/client';
 
 @Controller('clients')
@@ -17,14 +20,14 @@ export class ClientController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async createClient(@Body() createClientDto) {
+  async createClient(@Body() createClientDto: CreateClientDto) {
     return this.clientService.createClient(createClientDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getClientById(@Param('userId') id: string) {
-    return this.clientService.getClientByUserId(id);
+  async getClientById(@Param('id', ParseIntPipe) id: number) {
+    return this.clientService.getClientById(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -35,32 +38,37 @@ export class ClientController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async updateClient(@Param('id') id: string, @Body() updateClientDto) {
-    const clientId = parseInt(id);
-    return this.clientService.updateClient(clientId, updateClientDto);
+  async updateClient(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateClientDto: UpdateClientDto
+  ) {
+    return this.clientService.updateClient(id, updateClientDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/add-credits')
-  async addCredits(@Param('id') id: string, @Body() body) {
-    const clientId = parseInt(id);
-    return this.clientService.addCredits(clientId, body.credits);
+  async addCredits(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { credits: number }
+  ) {
+    return this.clientService.addCredits(id, body.credits);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/set-limit')
-  async setClientLimit(@Param('id') id: string, @Body() body) {
-    const clientId = parseInt(id);
-    return this.clientService.setClientLimit(clientId, body.limit);
+  async setClientLimit(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { limit: number }
+  ) {
+    return this.clientService.setClientLimit(id, body.limit);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/set-plan')
-  async setClientPlanByUserId(@Param('id') id: string, @Body() body) {
-    const clientId = parseInt(id);
-    return this.clientService.setClientPlanByUserId(
-      clientId,
-      body.plan as Plan
-    );
+  async setClientPlanByUserId(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { plan: Plan }
+  ) {
+    return this.clientService.setClientPlanByUserId(id, body.plan);
   }
 }

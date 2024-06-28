@@ -28,7 +28,7 @@ export class UserService {
       throw new Error('User not found');
     }
 
-    const userWithoutPassword = user;
+    const userWithoutPassword = { ...user };
     delete userWithoutPassword.password;
     return userWithoutPassword as UserDto;
   }

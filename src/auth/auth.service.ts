@@ -26,7 +26,7 @@ export class AuthService {
       return null;
     }
 
-    const userWithoutPassword = user;
+    const userWithoutPassword = { ...user };
     delete userWithoutPassword.password;
 
     return userWithoutPassword;
@@ -61,5 +61,14 @@ export class AuthService {
     } catch (error) {
       throw new Error('Error during registration');
     }
+  }
+
+  async getMe(user: User): Promise<Omit<User, 'password'> | null> {
+    if (user) {
+      const userWithoutPassword = { ...user };
+      delete userWithoutPassword.password;
+      return userWithoutPassword;
+    }
+    return null;
   }
 }

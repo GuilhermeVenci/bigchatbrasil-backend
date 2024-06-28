@@ -22,19 +22,12 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() createUserDto) {
-    const result = await this.authService.register(createUserDto);
-    return result;
+    return this.authService.register(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  getMe(@Request() req) {
-    const user = req.user;
-    if (user) {
-      const userWithoutPassword = user;
-      delete userWithoutPassword.password;
-      return userWithoutPassword;
-    }
-    return null;
+  async getMe(@Request() req) {
+    return this.authService.getMe(req.user);
   }
 }

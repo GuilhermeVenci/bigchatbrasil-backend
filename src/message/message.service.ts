@@ -1,14 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Message, Prisma } from '@prisma/client';
+import { SendMessageDto } from './send-message.dto';
 
 @Injectable()
 export class MessageService {
   constructor(private prisma: PrismaService) {}
 
-  async sendMessage(data: Prisma.MessageCreateInput): Promise<Message> {
+  async sendMessage(data: SendMessageDto): Promise<Message> {
     const client = await this.prisma.client.findUnique({
-      where: { id: data.client.connect.id },
+      where: { id: data.clientId },
     });
 
     if (!client) {
@@ -39,14 +40,18 @@ export class MessageService {
       }
     }
 
-    return this.prisma.message.create({
-      data: {
-        phoneNumber: data.phoneNumber,
-        isWhatsApp: data.isWhatsApp,
-        text: data.text,
-        sentAt: data.sentAt,
-        client: data.client,
+    const messageData: Prisma.MessageCreateInput = {
+      phoneNumber: data.phoneNumber,
+      isWhatsApp: data.isWhatsApp,
+      text: data.text,
+      sentAt: data.sentAt,
+      client: {
+        connect: { id: data.clientId },
       },
+    };
+
+    return this.prisma.message.create({
+      data: messageData,
     });
   }
 

@@ -18,14 +18,7 @@ export class ClientController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async createClient(@Body() createClientDto) {
-    const clientData = {
-      ...createClientDto,
-      user: {
-        connect: { id: createClientDto.userId },
-      },
-    };
-
-    return this.clientService.createClient(clientData);
+    return this.clientService.createClient(createClientDto);
   }
 
   @UseGuards(JwtAuthGuard)

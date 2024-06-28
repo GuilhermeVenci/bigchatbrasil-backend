@@ -8,7 +8,7 @@ export class ClientService {
 
   async createClient(data: Prisma.ClientCreateInput): Promise<Client> {
     if (!data.user || !data.user.connect || !data.user.connect.id) {
-      throw new Error('User information is missing or incorrect' + data.user);
+      throw new Error('User information is missing or incorrect');
     }
 
     return this.prisma.client.create({
@@ -32,17 +32,17 @@ export class ClientService {
     return this.prisma.client.findUnique({ where: { id } });
   }
 
-  async getClientByUserId(userId: string) {
+  async getClientByUserId(userId: string): Promise<Client | null> {
     return this.prisma.client.findUnique({
       where: { userId },
     });
   }
 
   async updateClient(
-    id: number,
+    clientId: number,
     data: Prisma.ClientUpdateInput
   ): Promise<Client> {
-    return this.prisma.client.update({ where: { id }, data });
+    return this.prisma.client.update({ where: { id: clientId }, data });
   }
 
   async deleteClient(id: number): Promise<Client> {
@@ -64,9 +64,9 @@ export class ClientService {
     });
   }
 
-  async setClientPlanByUserId(id: number, plan: Plan): Promise<Client> {
+  async setClientPlanByUserId(clientId: number, plan: Plan): Promise<Client> {
     return this.prisma.client.update({
-      where: { id },
+      where: { id: clientId },
       data: { plan },
     });
   }

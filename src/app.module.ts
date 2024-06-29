@@ -5,9 +5,10 @@ import { ClientModule } from './client/client.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MessageModule } from './message/message.module';
 import { PrismaService } from './prisma/prisma.service';
+import { PostgresService } from './postgres/postgres.service';
 
 @Module({
   imports: [AuthModule, UserModule, ClientModule, MessageModule, PrismaModule],
-  providers: [PrismaService],
+  providers: [PostgresService, PrismaService],
 })
 export class AppModule {}

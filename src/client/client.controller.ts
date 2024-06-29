@@ -71,4 +71,31 @@ export class ClientController {
   ) {
     return this.clientService.setClientPlanByUserId(id, body.plan);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('native')
+  async createClientNatively(@Body() createClientDto: CreateClientDto) {
+    return this.clientService.createClientNatively(createClientDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('native/:id')
+  async getClientByIdNatively(@Param('id', ParseIntPipe) id: number) {
+    return this.clientService.getClientByIdNatively(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('native/user/:userId')
+  async getClientByUserIdNatively(@Param('userId') userId: string) {
+    return this.clientService.getClientByUserIdNatively(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('native/:id')
+  async updateClientNatively(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateClientDto: UpdateClientDto
+  ) {
+    return this.clientService.updateClientNatively(id, updateClientDto);
+  }
 }

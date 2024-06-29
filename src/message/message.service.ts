@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Message, Prisma } from '@prisma/client';
 import { SendMessageDto } from './send-message.dto';
@@ -62,7 +66,7 @@ export class MessageService {
     });
 
     if (!client) {
-      throw new Error('Client not found');
+      throw new NotFoundException('Client not found');
     }
 
     return this.prisma.message.findMany({

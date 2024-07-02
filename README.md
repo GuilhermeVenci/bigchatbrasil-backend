@@ -39,6 +39,11 @@ Crie um arquivo .env na raiz do projeto com as seguintes variáveis:
 ```
 DATABASE_URL=postgresql://user:password@localhost:5432/bcb
 JWT_SECRET=sua_chave_secreta
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+POSTGRES_HOST=
+POSTGRES_PORT=
 ```
 
 ### 3. Instalar dependências

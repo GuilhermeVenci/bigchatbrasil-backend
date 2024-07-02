@@ -94,34 +94,48 @@ bcb-backend/
 
 - POST /auth/signup: Cadastro de novo usuário
 - POST /auth/login: Login do usuário
+- GET /me: Obter o usuário logado
 
 ### Clientes
 
-- GET /clients: Listar todos os clientes
-- POST /clients: Criar um novo cliente
-- GET /clients/
+- POST /clients
+  : Criar um novo cliente
+- GET /clients/:id
   : Obter detalhes de um cliente específico
-- PATCH /clients/
+- GET /clients/user/:userId
+  : Obter cliente por ID de usuário
+- PUT /clients/:id
   : Atualizar informações de um cliente
-- DELETE /clients/
-  : Deletar um cliente
+- PUT /clients/add-credits
+  : Adicionar créditos a um cliente
+- PUT /clients/set-limit
+  : Definir limite de um cliente
+- PUT /clients/set-plan
+  : Definir plano de um cliente
+- POST /clients/native
+  : Criar um novo cliente nativamente
+- GET /clients/native/:id
+  : Obter detalhes de um cliente nativamente
+- GET /clients/native/user/:userId
+  : Obter cliente por ID de usuário nativamente
+- PUT /clients/native/:id
+  : Atualizar informações de um cliente nativamente
 
 ### Mensagens
 
-- GET /messages: Consultar as mensagens enviadas por um cliente
+- GET /messages: Consultar uma mensagem enviada por um cliente
+- GET /messages/user: Consultar as mensagens enviadas por um cliente
 - POST /messages: Enviar uma nova mensagem
 
-### Operações de Backoffice
+## Usuários
 
-- POST /backoffice/credits: Incluir créditos para um cliente
-- GET /backoffice/balance/
-  : Consultar saldo de um cliente
-- PATCH /backoffice/limit/
-  : Alterar limite de um cliente
-- PATCH /backoffice/plan/
-  : Alterar plano de um cliente
-- GET /backoffice/clients/
-  : Ver dados de um cliente
+- POST /users: Criar um novo usuário
+- GET /users/:id
+  : Obter detalhes de um usuário específico
+- PUT /users/:id
+  : Atualizar informações de um usuário
+- DELETE /users/:id
+  : Deletar um usuário
 
 ## Boas Práticas
 
